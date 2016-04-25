@@ -6,8 +6,12 @@ from PyQt4 import QtCore
 import folium
 from src import tweet
 from src import io_geojson
+from src import point_pattern
+from src import point
+import PlotWindow
 import random
 from multiprocessing import Pool
+import numpy as np
 
 
 class LoadingWindow(QtGui.QWidget):
@@ -30,9 +34,10 @@ class View(QtGui.QMainWindow):
         self.map = None
         self.web_view = None
         self.map_dir = 'tmp/map.html'
-        self.init_ui()
         self.popup = None
-        self.all_tweets = []
+        self.all_tweets = None
+        self.subset = None
+        self.init_ui()
 
     def init_ui(self):
         # The map will be saved in a temporary directory. Make sure it exists.
@@ -74,6 +79,14 @@ class View(QtGui.QMainWindow):
         neutral_action.setStatusTip('View neutral Tweets')
         neutral_action.triggered.connect(self.display_neutral)
 
+        avg_nearest_action = QtGui.QAction('Average Nearest Neighbor', self)
+        avg_nearest_action.setStatusTip('Calculate mean nearest neighbor distance of the Tweets')
+        avg_nearest_action.triggered.connect(self.display_nearest_neighbor_distance)
+
+        g_function_action = QtGui.QAction('G Function', self)
+        g_function_action.setStatusTip('Calculate the G-Function for the Tweets')
+        g_function_action.triggered.connect(self.display_g_function)
+
         # Add a status bar.
         self.statusBar()
 
@@ -90,6 +103,10 @@ class View(QtGui.QMainWindow):
         visualize_menu.addAction(positive_action)
         visualize_menu.addAction(negative_action)
         visualize_menu.addAction(neutral_action)
+
+        calculate_menu = menu_bar.addMenu('&Calculate')
+        calculate_menu.addAction(avg_nearest_action)
+        calculate_menu.addAction(g_function_action)
 
         # Add an exit item to the toolbar.
         tool_bar = self.addToolBar('Exit')
@@ -195,9 +212,9 @@ class View(QtGui.QMainWindow):
         if len(self.all_tweets) == 0:
             print("No tweets to display.")
             return
-        subset = []
+        self.subset = []
         if selector == tweet.Tweet.all:
-            subset = self.all_tweets
+            self.subset = self.all_tweets
         else:
             print('Filtering tweets')
             pool = Pool(8)
@@ -208,10 +225,10 @@ class View(QtGui.QMainWindow):
                 f = View.is_negative
             else:
                 f = View.is_neutral
-            subset = View.pool_filter(pool, f, self.all_tweets)
+            self.subset = View.pool_filter(pool, f, self.all_tweets)
             #subset = list(filter(lambda tweet: tweet.classifier() == selector, self.all_tweets))
         print('Displaying tweets')
-        self.display_tweets(subset)
+        self.display_tweets(self.subset)
 
     @staticmethod
     def pool_filter(pool, func, candidates):
@@ -227,6 +244,58 @@ class View(QtGui.QMainWindow):
         # http://ask.sagemath.org/question/7621/howto-implement-filter-for-multiprocessing-module/?answer=11531#post-id-11531
         # for details on implementing this function.
         return [c for c, keep in zip(candidates, pool.map(func, candidates)) if keep]
+
+    def generate_point_pattern(self):
+        """
+        Generates a point pattern from the currently displayed tweets.
+        :return:
+        """
+        if self.subset is None:
+            self.subset = self.all_tweets
+
+        to_return = point_pattern.PointPattern()
+        for tweet in self.subset:
+            to_return.add_point(point.Point(tweet.lat, tweet.lon))
+
+        return to_return
+
+    def display_nearest_neighbor_distance(self):
+        if self.all_tweets is None:
+            print("No tweets to analyze")
+            return
+        pattern = self.generate_point_pattern()
+        msg = QtGui.QMessageBox()
+        msg.setIcon(QtGui.QMessageBox.Information)
+        text = "Average nearest neighbor distance: " + str(pattern.average_nearest_neighbor_distance_numpy())
+        print(text)
+        msg.setText(text)
+        msg.setWindowTitle("Average nearest neighbor distance")
+        msg.exec_()
+
+    def display_g_function(self):
+        if self.all_tweets is None:
+            print("No tweets to analyze")
+            return
+        pattern = self.generate_point_pattern()
+        g3 = pattern.compute_g(3)
+        x = np.array(list(g3.keys()))
+        y = np.array(list(g3.values()))
+        g9 = pattern.compute_g(9)
+        x4 = np.array(list(g9.keys()))
+        y4 = np.array(list(g9.values()))
+        g15 = pattern.compute_g(15)
+        x2 = np.array(list(g15.keys()))
+        y2 = np.array(list(g15.values()))
+        g27 = pattern.compute_g(27)
+        x3 = np.array(list(g27.keys()))
+        y3 = np.array(list(g27.values()))
+
+        plot = PlotWindow.Window()
+        plot.plot(x, y, 'G Function(3)', 'red')
+        plot.plot(x4, y4, 'G Function(9)', 'violet')
+        plot.plot(x2, y2, 'G Function(15)', 'blue')
+        plot.plot(x3, y3, 'G Function(27)', 'green')
+        plot.exec_()
 
 
 def main():

@@ -29,6 +29,8 @@ class Tweet(object):
         self.user_description = tweet_dict['user']['description']
         self.tweet_id = tweet_dict['id']
         self.user_followers_count = tweet_dict['user']['followers_count']
+        self.lat = None
+        self.lon = None
 
     def get_lat_n(self, n):
         """
@@ -64,10 +66,10 @@ class Tweet(object):
 
         """
         # The latitudes are the same for points 0 and 2, as well as 1 and 3.
-        lat = random.uniform(self.get_lat_n(0), self.get_lat_n(1))
+        self.lat = random.uniform(self.get_lat_n(0), self.get_lat_n(1))
         # The longitudes are the same for points 0 and 1, as well as 2 and 3.
-        lon = random.uniform(self.get_lon_n(0), self.get_lon_n(2))
-        return lat, lon
+        self.lon = random.uniform(self.get_lon_n(0), self.get_lon_n(2))
+        return self.lat, self.lon
 
     def classifier(self):
 
