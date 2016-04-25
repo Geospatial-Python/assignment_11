@@ -7,6 +7,7 @@ import folium
 from src import tweet
 from src import io_geojson
 import random
+from multiprocessing import Pool
 
 
 class LoadingWindow(QtGui.QWidget):
@@ -31,9 +32,12 @@ class View(QtGui.QMainWindow):
         self.map_dir = 'tmp/map.html'
         self.init_ui()
         self.popup = None
+        self.all_tweets = []
 
     def init_ui(self):
-        # This is the central empty widget, to be replaced in a future assignment.
+        # The map will be saved in a temporary directory. Make sure it exists.
+        os.makedirs('tmp', exist_ok=True)
+
         self.web_view = QtWebKit.QWebView()
         self.map = folium.Map(location=[33.4484, -112.0740])
         self.map.zoom_start = 10
@@ -41,9 +45,6 @@ class View(QtGui.QMainWindow):
         self.map.save(self.map_dir)
         self.web_view.load(QtCore.QUrl(self.map_dir))
         self.setCentralWidget(self.web_view)
-
-        # The map will be saved in a temporary directory. Make sure it exists.
-        os.makedirs('tmp', exist_ok=True)
 
         # Define the exit action for use in the toolbar and file menu.
         exit_action = QtGui.QAction(QtGui.QIcon('exit-24.png'), 'Exit', self)
@@ -57,6 +58,22 @@ class View(QtGui.QMainWindow):
         open_action.setStatusTip('Open a Tweet JSON file')
         open_action.triggered.connect(self.open)
 
+        all_action = QtGui.QAction('View All', self)
+        all_action.setStatusTip('View all Tweets')
+        all_action.triggered.connect(self.display_all)
+
+        positive_action = QtGui.QAction('View Positive', self)
+        positive_action.setStatusTip('View positive Tweets')
+        positive_action.triggered.connect(self.display_positive)
+
+        negative_action = QtGui.QAction('View Negative', self)
+        negative_action.setStatusTip('View negative Tweets')
+        negative_action.triggered.connect(self.display_negative)
+
+        neutral_action = QtGui.QAction('View Neutral', self)
+        neutral_action.setStatusTip('View neutral Tweets')
+        neutral_action.triggered.connect(self.display_neutral)
+
         # Add a status bar.
         self.statusBar()
 
@@ -67,6 +84,12 @@ class View(QtGui.QMainWindow):
         file_menu = menu_bar.addMenu('&File')
         file_menu.addAction(open_action)
         file_menu.addAction(exit_action)
+
+        visualize_menu = menu_bar.addMenu('&Visualization')
+        visualize_menu.addAction(all_action)
+        visualize_menu.addAction(positive_action)
+        visualize_menu.addAction(negative_action)
+        visualize_menu.addAction(neutral_action)
 
         # Add an exit item to the toolbar.
         tool_bar = self.addToolBar('Exit')
@@ -98,6 +121,7 @@ class View(QtGui.QMainWindow):
         temp_tweets = io_geojson.read_tweets(file_name)
         for _ in temp_tweets:
             tweets.append(tweet.Tweet(_))
+        self.all_tweets = tweets
         self.display_tweets(tweets)
 
     def display_tweets(self, tweets):
@@ -129,7 +153,7 @@ class View(QtGui.QMainWindow):
             lat, lon = tweet.gen_point_in_bounds()
             average_lat += lat
             average_lon += lon
-            folium.Marker([lat, lon], popup=tweet.username).add_to(self.map)
+            folium.Marker([lat, lon], popup=tweet.tweet).add_to(self.map)
             handled_tweets += 1
             # Show the percent progress in the popup window.
             self.popup.progress_bar.setValue(100 * handled_tweets / len(tweets))
@@ -142,6 +166,67 @@ class View(QtGui.QMainWindow):
         self.web_view.load(QtCore.QUrl(self.map_dir))
 
         self.popup.close()
+
+    def display_all(self):
+        self.display_subset(tweet.Tweet.all)
+
+    def display_positive(self):
+        self.display_subset(tweet.Tweet.positive)
+
+    def display_negative(self):
+        self.display_subset(tweet.Tweet.negative)
+
+    def display_neutral(self):
+        self.display_subset(tweet.Tweet.neutral)
+
+    @staticmethod
+    def is_positive(a_tweet):
+        return a_tweet.classifier() == tweet.Tweet.positive
+
+    @staticmethod
+    def is_negative(a_tweet):
+        return a_tweet.classifier() == tweet.Tweet.negative
+
+    @staticmethod
+    def is_neutral(a_tweet):
+        return a_tweet.classifier() == tweet.Tweet.neutral
+
+    def display_subset(self, selector):
+        if len(self.all_tweets) == 0:
+            print("No tweets to display.")
+            return
+        subset = []
+        if selector == tweet.Tweet.all:
+            subset = self.all_tweets
+        else:
+            print('Filtering tweets')
+            pool = Pool(8)
+            f = None
+            if selector == tweet.Tweet.positive:
+                f = View.is_positive
+            elif selector == tweet.Tweet.negative:
+                f = View.is_negative
+            else:
+                f = View.is_neutral
+            subset = View.pool_filter(pool, f, self.all_tweets)
+            #subset = list(filter(lambda tweet: tweet.classifier() == selector, self.all_tweets))
+        print('Displaying tweets')
+        self.display_tweets(subset)
+
+    @staticmethod
+    def pool_filter(pool, func, candidates):
+        """
+        A normal functional filter approach may require an excessive amount of runtime
+        for large data sets. This function will parallelize that task.
+        :param pool: The multiprocessing pool to use to parallelize the task.
+        :param func: The filter function (should return True or False if the item should be in the set).
+        :param candidates: The set to filter.
+        :return: The filtered set.
+        """
+        # Thanks to:
+        # http://ask.sagemath.org/question/7621/howto-implement-filter-for-multiprocessing-module/?answer=11531#post-id-11531
+        # for details on implementing this function.
+        return [c for c, keep in zip(candidates, pool.map(func, candidates)) if keep]
 
 
 def main():
