@@ -209,7 +209,7 @@ class View(QtGui.QMainWindow):
         return a_tweet.classifier() == tweet.Tweet.neutral
 
     def display_subset(self, selector):
-        if len(self.all_tweets) == 0:
+        if self.all_tweets is None:
             print("No tweets to display.")
             return
         self.subset = []
