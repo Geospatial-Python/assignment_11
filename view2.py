@@ -9,6 +9,11 @@ class View(QtGui.QMainWindow):
 		
 	def __init__(self):
 		super(View, self).__init__()
+		self.pos_tweets = []
+		self.neg_tweets = []
+		self.neu_tweets = []
+		self.tweets = []
+		self.open()
 		self.init_ui()
 
 	def init_ui(self):
@@ -25,25 +30,65 @@ class View(QtGui.QMainWindow):
 		load_action = QtGui.QAction(QtGui.QIcon('tweet.png'), 'Exit', self)
 		load_action.setShortcut('Ctl+O')
 		load_action.triggered.connect(self.open)
+		
+		negative = QtGui.QAction('negative', self)
+		negative.triggered.connect(self.display_neg)
+		neutral = QtGui.QAction('neutral', self)
+		neutral.triggered.connect(self.display_neu)
+		positive = QtGui.QAction('positive', self)
+		positive.triggered.connect(self.display_pos)
+		show_all = QtGui.QAction('all', self)
+		show_all.triggered.connect(self.display_all)
+
+		menuBar = self.menuBar()
+		sent_menu = menuBar.addMenu('Sentiment')
+		sent_menu.addAction(show_all)		
+		sent_menu.addAction(positive)
+		sent_menu.addAction(neutral)
+		sent_menu.addAction(negative)		
 
 		toolbar = self.addToolBar('Open')
 		toolbar.addAction(load_action)
 
 		self.show()
 
+	def display_neu(self):
+		self.plot(self.neu_tweets)
+
+	def display_neg(self):
+		self.plot(self.neg_tweets)
+
+	def display_pos(self):
+		self.plot(self.pos_tweets)	
+
+	def display_all(self):
+		self.plot(self.all_tweets)
+
 	def open(self):
 		file_name = QtGui.QFileDialog.getOpenFileName(parent=self, caption='Open Twitter Data', filter='*.json')
 		self.tweets_loc = []
 		tweet_dic  = io_geojson.read_tweets(file_name)
-		tweets = []
+
+
 		for twit in tweet_dic:
-			tweets.append(tweet.Tweet(twit))
+			self.tweets.append(tweet.Tweet(twit))
+			
+		for twet in self.tweets:
+			if twet.sentiment == 'neutral':
+				self.neu_tweets.append(twet)
+			elif twet.sentiment == 'negative':
+				self.neg_tweets.append(twet)
+			else:
+				self.pos_tweets.append(twet)
+		
+		
+	def plot(self, tweets):
 
 		for twet in tweets:
 			lat = twet.lat[1]
 			lng = twet.lng[0]
 
-			folium.Marker([lat, lng], popup=twet.user).add_to(self.map)
+			folium.Marker([lat, lng], popup=twet.tweet).add_to(self.map)
 
 		self.map.save(self.map_loc)
 		self.web_view.load(QtCore.QUrl(self.map_loc))
