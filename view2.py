@@ -31,21 +31,27 @@ class View(QtGui.QMainWindow):
 		load_action.setShortcut('Ctl+O')
 		load_action.triggered.connect(self.open)
 		
-		negative = QtGui.QAction('negative', self)
+		negative = QtGui.QAction('Negative', self)
 		negative.triggered.connect(self.display_neg)
-		neutral = QtGui.QAction('neutral', self)
+		neutral = QtGui.QAction('Neutral', self)
 		neutral.triggered.connect(self.display_neu)
-		positive = QtGui.QAction('positive', self)
+		positive = QtGui.QAction('Positive', self)
 		positive.triggered.connect(self.display_pos)
-		show_all = QtGui.QAction('all', self)
+		show_all = QtGui.QAction('All', self)
 		show_all.triggered.connect(self.display_all)
+
+		calc_g = QtGui.QAction('G Function', self)
+		#calc_g.triggered.connect()
 
 		menuBar = self.menuBar()
 		sent_menu = menuBar.addMenu('Sentiment')
 		sent_menu.addAction(show_all)		
 		sent_menu.addAction(positive)
 		sent_menu.addAction(neutral)
-		sent_menu.addAction(negative)		
+		sent_menu.addAction(negative)	
+
+		calc_menu = menuBar.addMenu('Calculate')
+		calc_menu.addAction(calc_g)	
 
 		toolbar = self.addToolBar('Open')
 		toolbar.addAction(load_action)
@@ -62,7 +68,7 @@ class View(QtGui.QMainWindow):
 		self.plot(self.pos_tweets)	
 
 	def display_all(self):
-		self.plot(self.all_tweets)
+		self.plot(self.tweets)
 
 	def open(self):
 		file_name = QtGui.QFileDialog.getOpenFileName(parent=self, caption='Open Twitter Data', filter='*.json')
@@ -74,9 +80,9 @@ class View(QtGui.QMainWindow):
 			self.tweets.append(tweet.Tweet(twit))
 			
 		for twet in self.tweets:
-			if twet.sentiment == 'neutral':
+			if twet.sentiment == 'Neutral':
 				self.neu_tweets.append(twet)
-			elif twet.sentiment == 'negative':
+			elif twet.sentiment == 'Negative':
 				self.neg_tweets.append(twet)
 			else:
 				self.pos_tweets.append(twet)
