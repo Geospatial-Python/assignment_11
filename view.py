@@ -265,18 +265,22 @@ class Example(QtGui.QMainWindow):
         global activeList
         gx = [3, 7, 14, 26, 27]
         gy = []
+        sum = 0;
         if activeList == 1:
             for i in gx:
                 theList = point.PointPattern(positiveList)
-                gy.append(theList.compute_g(i))
+                sum = sum+theList.compute_g(i)
+                gy.append(sum)
         elif activeList == -1:
             for i in gx:
                 theList = point.PointPattern(negativeList)
-                gy.append(theList.compute_g(i))
+                sum = sum+theList.compute_g(i)
+                gy.append(sum)
         elif activeList == 0:
             for i in gx:
                 theList = point.PointPattern(neutralList)
-                gy.append(theList.compute_g(i))
+                sum = sum+theList.compute_g(i)
+                gy.append(sum)
         
         
         plt.figure(1)
