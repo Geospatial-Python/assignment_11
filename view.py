@@ -31,7 +31,7 @@ class View(QtGui.QMainWindow):
         self.negativeTweets = []
         self.neutralTweets = []
         self.allTweets = []
-
+        self.loadedAlready = False
 
 
     def initUI(self):
@@ -101,15 +101,20 @@ class View(QtGui.QMainWindow):
         self.show()
 
     def loadPositive(self):
+        self.map = folium.Map(location=[33.29026,-112.323914],zoom_start=10)
         self.markerRedraw(self.positiveTweets)
 
     def loadNegative(self):
+        self.map = folium.Map(location=[33.29026,-112.323914],zoom_start=10)
         self.markerRedraw(self.negativeTweets)
 
     def loadNeutral(self):
+        self.map = folium.Map(location=[33.29026,-112.323914],zoom_start=10)
+
         self.markerRedraw(self.negativeTweets)
 
     def loadAll(self):
+        self.map = folium.Map(location=[33.29026,-112.323914],zoom_start=10)
         self.markerRedraw(self.allTweets)
 
     def markerRedraw(self,tweetsToDraw):
@@ -119,7 +124,7 @@ class View(QtGui.QMainWindow):
         for t1 in tweetsToDraw:
             markerPoint = [t1.latitude,t1.longitude]
             #now create the actual marker:
-            markerToAdd = folium.Marker(markerPoint)
+            markerToAdd = folium.Marker(markerPoint,popup= t1.tweetText)
             markerToAdd.add_to(self.map)
 
             #you need to recenter the map at the mean center of the points. That means that you have to calculate the mean center
@@ -176,7 +181,7 @@ class View(QtGui.QMainWindow):
             if i < 5:
                 print(markerPoint)
             #now create the actual marker:
-            markerToAdd = folium.Marker(markerPoint)
+            markerToAdd = folium.Marker(markerPoint,popup= t1.tweetText)
             markerToAdd.add_to(self.map)
 
             #you need to recenter the map at the mean center of the points. That means that you have to calculate the mean center
