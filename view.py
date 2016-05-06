@@ -19,6 +19,12 @@ import folium
 import os
 import src.tweet
 import src.io_geojson
+import src.point
+import src.pointPattern
+import matplotlib
+import matplotlib.pyplot as pyp
+import numpy as np
+
 
 
 class View(QtGui.QMainWindow):
@@ -32,6 +38,8 @@ class View(QtGui.QMainWindow):
         self.neutralTweets = []
         self.allTweets = []
         self.loadedAlready = False
+        self.currentlyPlotted = []
+        self.tweetPattern = src.pointPattern.PointPattern()
 
 
     def initUI(self):
@@ -79,6 +87,14 @@ class View(QtGui.QMainWindow):
         allAction.setStatusTip('Load all of the tweets')
         allAction.triggered.connect(self.loadAll) # change this
 
+        avgNearNeighAction = QtGui.QAction('Average Nearest Neighbor',self)
+        avgNearNeighAction.setStatusTip('Compute Average Nearest Neighbor Distance')
+        avgNearNeighAction.triggered.connect(self.avgNN)
+
+        gfuncAction = QtGui.QAction('G Function',self)
+        gfuncAction.setStatusTip('Compute the g function of the points')
+        gfuncAction.triggered.connect(self.gfuncCompute)
+
         #added a ready message to the status bar
         self.statusBar().showMessage('Ready')
 
@@ -95,6 +111,8 @@ class View(QtGui.QMainWindow):
         toolbar.addAction(positiveAction)
         toolbar.addAction(negativeAction)
         toolbar.addAction(neutralAction)
+        toolbar.addAction(avgNearNeighAction)
+        toolbar.addAction(gfuncAction)
 
         #setting the window name
         self.setWindowTitle('Tweet Map')
@@ -102,20 +120,51 @@ class View(QtGui.QMainWindow):
 
     def loadPositive(self):
         self.map = folium.Map(location=[33.29026,-112.323914],zoom_start=10)
+        self.currentlyPlotted = self.positiveTweets
         self.markerRedraw(self.positiveTweets)
 
     def loadNegative(self):
         self.map = folium.Map(location=[33.29026,-112.323914],zoom_start=10)
+        self.currentlyPlotted = self.negativeTweets
         self.markerRedraw(self.negativeTweets)
 
     def loadNeutral(self):
         self.map = folium.Map(location=[33.29026,-112.323914],zoom_start=10)
-
+        self.currentlyPlotted = self.neutralTweets
         self.markerRedraw(self.negativeTweets)
 
     def loadAll(self):
         self.map = folium.Map(location=[33.29026,-112.323914],zoom_start=10)
         self.markerRedraw(self.allTweets)
+
+    def avgNN(self):
+        print("do stuff for avgNN")
+
+    def gfuncCompute(self):
+        #so here, you want to compute the g function on a set of points. Well, the points inside the twitter one are of a type Point.
+        #tweet.geoPoint is of type point. So, you can use the list of tweets being visualized right now, then iterate through those
+        #tweets, and add them as points to a point pattern... through I guess they are a point pattern.
+
+        #so you have self.currentlyPlotted: [t1,t2,t3,t4], calculate the g function on that.
+        for t in self.currentlyPlotted:
+            self.tweetPattern.add_point(t.geoPoint)
+
+        #now compute the g function:
+        gfuncList,ds = self.tweetPattern.numpy_compute_g(12)
+
+        #now plot it:
+
+
+
+
+
+
+        fig2, ax2 = pyp.subplots()
+        ax2.plot(np.array(ds),np.array(gfuncList),'ro-')
+        ax2.set_xlabel(r'$d$')
+        ax2.set_ylabel(r'$\hat{G}(d)$')
+        ax2.set_title(r'$\hat{G}(d)$ Result')
+        pyp.show()
 
     def markerRedraw(self,tweetsToDraw):
         #draw only the tweets in the list that are passed in:
@@ -176,6 +225,10 @@ class View(QtGui.QMainWindow):
         long_sum = 0
         lat_sum = 0
         i = 0
+
+        #set the currently visualized points:
+        self.currentlyPlotted = tweets
+
         for t1 in tweets: #Going through each Tweet class element
             markerPoint = [t1.latitude,t1.longitude]
             if i < 5:
