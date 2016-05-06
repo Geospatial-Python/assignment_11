@@ -1,0 +1,408 @@
+
+        <!DOCTYPE html>
+        <head>
+            
+        
+            <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        
+            
+        
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+        
+        
+        
+            
+        
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        
+        
+        
+            
+        
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        
+        
+        
+            
+        
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js"></script>
+        
+        
+        
+            
+        
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/leaflet.markercluster-src.js"></script>
+        
+        
+        
+            
+        
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/leaflet.markercluster.js"></script>
+        
+        
+        
+            
+        
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+        
+        
+        
+            
+        
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+        
+        
+        
+            
+        
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+        
+        
+        
+            
+        
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+        
+        
+        
+            
+        
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css" />
+        
+        
+        
+            
+        
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.Default.css" />
+        
+        
+        
+            
+        
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.css" />
+        
+        
+        
+            
+        
+            <link rel="stylesheet" href="https://raw.githubusercontent.com/python-visualization/folium/master/folium/templates/leaflet.awesome.rotate.css" />
+        
+        
+        
+            
+            <style>
+
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                }
+
+            #map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+            
+        
+            
+            <style> #map_979ba8353534473e9949eb084e28842e {
+                position : relative;
+                width : 100.0%;
+                height: 100.0%;
+                left: 0.0%;
+                top: 0.0%;
+                }
+            </style>
+        
+        
+        
+        </head>
+        <body>
+            
+        
+            
+            <div class="folium-map" id="map_979ba8353534473e9949eb084e28842e" ></div>
+        
+        
+        
+        </body>
+        <script>
+            
+        
+            
+
+            var southWest = L.latLng(-90, -180);
+            var northEast = L.latLng(90, 180);
+            var bounds = L.latLngBounds(southWest, northEast);
+
+            var map_979ba8353534473e9949eb084e28842e = L.map('map_979ba8353534473e9949eb084e28842e', {
+                                           center:[33.3450155087,-112.145530314],
+                                           zoom: 10,
+                                           maxBounds: bounds,
+                                           layers: [],
+                                           crs: L.CRS.EPSG3857
+                                         });
+            
+        
+        
+            
+            var tile_layer_841a9e6f25394006b5715a7c4b6266e4 = L.tileLayer(
+                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                {
+                    maxZoom: 18,
+                    minZoom: 1,
+                    attribution: 'Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
+                    detectRetina: false
+                    }
+                ).addTo(map_979ba8353534473e9949eb084e28842e);
+
+        
+        
+            
+
+            var marker_c4fd31e34bd14e03833b4b8fb55eebe4 = L.marker(
+                [33.439672991,-112.001359081],
+                {
+                    icon: new L.Icon.Default()
+                    }
+                )
+                .addTo(map_979ba8353534473e9949eb084e28842e);
+            
+        
+            
+            var popup_8410fbdaec6c4ffabe4f4b850ddf78fa = L.popup({maxWidth: '300'});
+
+            
+                var html_5ad4d748184c409fa5e5467f690456e1 = $('         <div id="html_5ad4d748184c409fa5e5467f690456e1"                 style="width: 100.0%; height: 100.0%;">                 it&#39;s pass 8 and I still haven&#39;t eaten dinner yet.... AGAIN⁉️‼️</div>                 ')[0];
+                popup_8410fbdaec6c4ffabe4f4b850ddf78fa.setContent(html_5ad4d748184c409fa5e5467f690456e1);
+            
+
+            marker_c4fd31e34bd14e03833b4b8fb55eebe4.bindPopup(popup_8410fbdaec6c4ffabe4f4b850ddf78fa);
+
+            
+        
+        
+            
+
+            var marker_060e15ad3e1c467abcaae742a87d1cde = L.marker(
+                [33.4946598979,-111.840052846],
+                {
+                    icon: new L.Icon.Default()
+                    }
+                )
+                .addTo(map_979ba8353534473e9949eb084e28842e);
+            
+        
+            
+            var popup_88fb3e64bf9c4432bf6e7d00b00d4ec6 = L.popup({maxWidth: '300'});
+
+            
+                var html_b61b26bf4561480fb5ba58a5a33f1581 = $('         <div id="html_b61b26bf4561480fb5ba58a5a33f1581"                 style="width: 100.0%; height: 100.0%;">                 the only good thing about today is this Sex on the Beach Dutch</div>                 ')[0];
+                popup_88fb3e64bf9c4432bf6e7d00b00d4ec6.setContent(html_b61b26bf4561480fb5ba58a5a33f1581);
+            
+
+            marker_060e15ad3e1c467abcaae742a87d1cde.bindPopup(popup_88fb3e64bf9c4432bf6e7d00b00d4ec6);
+
+            
+        
+        
+            
+
+            var marker_64098b056dd44501b3375e7ca19f72b6 = L.marker(
+                [33.3003418931,-112.30697917],
+                {
+                    icon: new L.Icon.Default()
+                    }
+                )
+                .addTo(map_979ba8353534473e9949eb084e28842e);
+            
+        
+            
+            var popup_43187bec2e88454581b5f382c5c9617f = L.popup({maxWidth: '300'});
+
+            
+                var html_3e4256a4048a463f87f53659d320998d = $('         <div id="html_3e4256a4048a463f87f53659d320998d"                 style="width: 100.0%; height: 100.0%;">                 @MrsC_toBe @EricaKatherin10 I feel y&#39;all I totally didn&#39;t help someone cheat &amp;amp; got screwed  but I would do it again in an instant</div>                 ')[0];
+                popup_43187bec2e88454581b5f382c5c9617f.setContent(html_3e4256a4048a463f87f53659d320998d);
+            
+
+            marker_64098b056dd44501b3375e7ca19f72b6.bindPopup(popup_43187bec2e88454581b5f382c5c9617f);
+
+            
+        
+        
+            
+
+            var marker_fc428f33ced046e6b7b7ada6ce1a220a = L.marker(
+                [33.8109446713,-112.0529692],
+                {
+                    icon: new L.Icon.Default()
+                    }
+                )
+                .addTo(map_979ba8353534473e9949eb084e28842e);
+            
+        
+            
+            var popup_fbe28d704c0642f59363dce88cd67a0b = L.popup({maxWidth: '300'});
+
+            
+                var html_eb010399188744c78860897a0477da51 = $('         <div id="html_eb010399188744c78860897a0477da51"                 style="width: 100.0%; height: 100.0%;">                 @identivity they would def sell! The mochi ones would too! You could maybe style it like the neko atsume mochi cushion?</div>                 ')[0];
+                popup_fbe28d704c0642f59363dce88cd67a0b.setContent(html_eb010399188744c78860897a0477da51);
+            
+
+            marker_fc428f33ced046e6b7b7ada6ce1a220a.bindPopup(popup_fbe28d704c0642f59363dce88cd67a0b);
+
+            
+        
+        
+            
+
+            var marker_b715c3b5e4a540b294b14b31d3efaf7a = L.marker(
+                [33.46719916,-112.073],
+                {
+                    icon: new L.Icon.Default()
+                    }
+                )
+                .addTo(map_979ba8353534473e9949eb084e28842e);
+            
+        
+            
+            var popup_7b1a9d29e19b4988a1dcf3e5c03914da = L.popup({maxWidth: '300'});
+
+            
+                var html_b2a9fcc5feba46f9a1491222f7de74bb = $('         <div id="html_b2a9fcc5feba46f9a1491222f7de74bb"                 style="width: 100.0%; height: 100.0%;">                 ODE TO THE TURKS.... - So, to celebrate the azcostume fiftieth anniversary my dear Beth from… https://t.co/hveKJsZbaG</div>                 ')[0];
+                popup_7b1a9d29e19b4988a1dcf3e5c03914da.setContent(html_b2a9fcc5feba46f9a1491222f7de74bb);
+            
+
+            marker_b715c3b5e4a540b294b14b31d3efaf7a.bindPopup(popup_7b1a9d29e19b4988a1dcf3e5c03914da);
+
+            
+        
+        
+            
+
+            var marker_7e5023b992d04a06ae6df80be45438e7 = L.marker(
+                [33.3434771539,-111.781010357],
+                {
+                    icon: new L.Icon.Default()
+                    }
+                )
+                .addTo(map_979ba8353534473e9949eb084e28842e);
+            
+        
+            
+            var popup_2fe5c01ec93f44d6bf956b944bb63f93 = L.popup({maxWidth: '300'});
+
+            
+                var html_1c3c8d0e26ac41138c873ae434cf69f6 = $('         <div id="html_1c3c8d0e26ac41138c873ae434cf69f6"                 style="width: 100.0%; height: 100.0%;">                 @TheCaliAllStars great family to be a part of!  🙌🏽 Congrats to our Cali Teams today! #allgloryup</div>                 ')[0];
+                popup_2fe5c01ec93f44d6bf956b944bb63f93.setContent(html_1c3c8d0e26ac41138c873ae434cf69f6);
+            
+
+            marker_7e5023b992d04a06ae6df80be45438e7.bindPopup(popup_2fe5c01ec93f44d6bf956b944bb63f93);
+
+            
+        
+        
+            
+
+            var marker_8d3298306c6443069f746479f2c58a1e = L.marker(
+                [32.2250587294,-113.728836471],
+                {
+                    icon: new L.Icon.Default()
+                    }
+                )
+                .addTo(map_979ba8353534473e9949eb084e28842e);
+            
+        
+            
+            var popup_35b66edf51f1467a87daf3bf39962cc0 = L.popup({maxWidth: '300'});
+
+            
+                var html_eacaadf0525f4c5f88e61d3d3c7891f7 = $('         <div id="html_eacaadf0525f4c5f88e61d3d3c7891f7"                 style="width: 100.0%; height: 100.0%;">                 So sad that I lost my COOP SWEATER! That one was my favorite too😭💔💔</div>                 ')[0];
+                popup_35b66edf51f1467a87daf3bf39962cc0.setContent(html_eacaadf0525f4c5f88e61d3d3c7891f7);
+            
+
+            marker_8d3298306c6443069f746479f2c58a1e.bindPopup(popup_35b66edf51f1467a87daf3bf39962cc0);
+
+            
+        
+        
+            
+
+            var marker_2bb36c9fa57641db81734a968a8eb331 = L.marker(
+                [33.4055121716,-111.97382189],
+                {
+                    icon: new L.Icon.Default()
+                    }
+                )
+                .addTo(map_979ba8353534473e9949eb084e28842e);
+            
+        
+            
+            var popup_9340642bd5d54c178921f7b5815b8545 = L.popup({maxWidth: '300'});
+
+            
+                var html_674fb1213da1475fb441ae5ccbb34920 = $('         <div id="html_674fb1213da1475fb441ae5ccbb34920"                 style="width: 100.0%; height: 100.0%;">                 @MacandGaydos No tweeting you while having this..promise 😂😂 https://t.co/CgrDruAxW3</div>                 ')[0];
+                popup_9340642bd5d54c178921f7b5815b8545.setContent(html_674fb1213da1475fb441ae5ccbb34920);
+            
+
+            marker_2bb36c9fa57641db81734a968a8eb331.bindPopup(popup_9340642bd5d54c178921f7b5815b8545);
+
+            
+        
+        
+            
+
+            var marker_a4683f6ce3634d7b9ff38ed18f40f96f = L.marker(
+                [33.4661789,-111.9203415],
+                {
+                    icon: new L.Icon.Default()
+                    }
+                )
+                .addTo(map_979ba8353534473e9949eb084e28842e);
+            
+        
+            
+            var popup_a94c473d30aa4b6282cbd869ff3e0ea6 = L.popup({maxWidth: '300'});
+
+            
+                var html_b753507fab25408c9b37359f7fea1820 = $('         <div id="html_b753507fab25408c9b37359f7fea1820"                 style="width: 100.0%; height: 100.0%;">                 Sara Robinson &amp;amp; Gal @ Pho Cao @ Pho Cao https://t.co/kErRPerfe3</div>                 ')[0];
+                popup_a94c473d30aa4b6282cbd869ff3e0ea6.setContent(html_b753507fab25408c9b37359f7fea1820);
+            
+
+            marker_a4683f6ce3634d7b9ff38ed18f40f96f.bindPopup(popup_a94c473d30aa4b6282cbd869ff3e0ea6);
+
+            
+        
+        
+            
+
+            var marker_da6711a488c145e189a5f0df547bfbce = L.marker(
+                [33.4971095186,-111.776932621],
+                {
+                    icon: new L.Icon.Default()
+                    }
+                )
+                .addTo(map_979ba8353534473e9949eb084e28842e);
+            
+        
+            
+            var popup_91e0d5d975154f8d89b893356f6ef75a = L.popup({maxWidth: '300'});
+
+            
+                var html_919cd0f94aa7415f86685a09f2b0ba19 = $('         <div id="html_919cd0f94aa7415f86685a09f2b0ba19"                 style="width: 100.0%; height: 100.0%;">                 @dopinator thanks bud💖👌🏼</div>                 ')[0];
+                popup_91e0d5d975154f8d89b893356f6ef75a.setContent(html_919cd0f94aa7415f86685a09f2b0ba19);
+            
+
+            marker_da6711a488c145e189a5f0df547bfbce.bindPopup(popup_91e0d5d975154f8d89b893356f6ef75a);
+
+            
+        
+        
+        
+        </script>
+        
