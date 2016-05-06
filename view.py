@@ -138,7 +138,12 @@ class View(QtGui.QMainWindow):
         self.markerRedraw(self.allTweets)
 
     def avgNN(self):
-        print("do stuff for avgNN")
+        for t in self.currentlyPlotted:
+            self.tweetPattern.add_point(t.geoPoint)
+
+        #now compute average nearest neighbor:
+        nn_dist = self.tweetPattern.average_nearest_neighbor()
+        return nn_dist
 
     def gfuncCompute(self):
         #so here, you want to compute the g function on a set of points. Well, the points inside the twitter one are of a type Point.
@@ -204,35 +209,31 @@ class View(QtGui.QMainWindow):
             return
 
         tweets = []
-        j = 0
         tweet_dict = src.io_geojson.read_twitter_data(file)
         for t in tweet_dict: # for every tweet in the tweet dictionary
-            if j < 10:
-                tweets.append(src.tweet.Tweet(t))
-                self.allTweets.append(src.tweet.Tweet(t))
-                #now append them to a global list of all the pos/neg/neu tweets so that you can call them again later:
-                temp = src.tweet.Tweet(t)
-                if(temp.sentimentMark == 'Positive'):
-                    self.positiveTweets.append(src.tweet.Tweet(t))
-                elif(temp.sentimentMark == 'Negative'):
-                    self.negativeTweets.append(src.tweet.Tweet(t))
-                elif(temp.sentimentMark == 'Neutral'):
+            #if j < 10:
+            tweets.append(src.tweet.Tweet(t))
+            self.allTweets.append(src.tweet.Tweet(t))
+            #now append them to a global list of all the pos/neg/neu tweets so that you can call them again later:
+            temp = src.tweet.Tweet(t)
+            if(temp.sentimentMark == 'Positive'):
+                self.positiveTweets.append(src.tweet.Tweet(t))
+            elif(temp.sentimentMark == 'Negative'):
+                self.negativeTweets.append(src.tweet.Tweet(t))
+            elif(temp.sentimentMark == 'Neutral'):
                     self.neutralTweets.append(src.tweet.Tweet(t))
 
-            j = j +1
+
         #now that you've created an list of tweets implementing the Tweet class, use the saved
         #array to actually create the markers and get the latitude/longitude values from the points:
         long_sum = 0
         lat_sum = 0
-        i = 0
 
         #set the currently visualized points:
         self.currentlyPlotted = tweets
 
         for t1 in tweets: #Going through each Tweet class element
             markerPoint = [t1.latitude,t1.longitude]
-            if i < 5:
-                print(markerPoint)
             #now create the actual marker:
             markerToAdd = folium.Marker(markerPoint,popup= t1.tweetText)
             markerToAdd.add_to(self.map)
@@ -241,7 +242,6 @@ class View(QtGui.QMainWindow):
             #as you go through all the points:
             long_sum = long_sum + markerPoint[0]
             lat_sum = lat_sum + markerPoint[1]
-            i = i + 1
 
         print(len(tweets))
         mean_center_long = long_sum/len(tweets)
